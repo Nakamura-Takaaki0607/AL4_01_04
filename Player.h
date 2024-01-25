@@ -1,26 +1,34 @@
 ﻿#pragma once
 
+#include "BaseCharacter.h"
 #include "Input.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-class Player {
+class Player : public BaseCharacter {
 public:
+	enum {
+		kModelIndexBody,
+		kModelIndexHead,
+		kModelIndexL_arm,
+		kModelIndexR_arm,
+	};
+
 	// 初期化
-	void Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm);
+	void Initialize(const std::vector<Model*>& models) override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 描画
-	void Draw(const ViewProjection& viewProjection);
-
-	const WorldTransform& GetWorldTransform() { return worldTransformBase_; }
+	void Draw(const ViewProjection& viewProjection) override;
 
 	void SetViewProjection(const ViewProjection* viewProjection) {
 		viewProjection_ = viewProjection;
 	}
+
+	// const WorldTransform& GetWorldTransform() { return worldTransformBase_; }
 
 private:
 	// 浮遊移動のサイクル<sec>
@@ -31,19 +39,13 @@ private:
 	float idleArmAngleMax_ = 30.0f;
 
 	// ワールド変換データ
-	WorldTransform worldTransformBase_;
+	//WorldTransform worldTransformBase_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
 	// 浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
-
-	// モデル
-	Model* modelBody_ = nullptr;
-	Model* modelHead_ = nullptr;
-	Model* modelL_arm_ = nullptr;
-	Model* modelR_arm_ = nullptr;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
@@ -52,8 +54,14 @@ private:
 	// ギミック更新
 	void UpdateFloatingGimmick();
 
+	// モデル
+	//Model* modelBody_ = nullptr;
+	//Model* modelHead_ = nullptr;
+	//Model* modelL_arm_ = nullptr;
+	//Model* modelR_arm_ = nullptr;
+
 	// テクスチャハンドル
-	uint32_t textureHandle_ = 0u;
+	//uint32_t textureHandle_ = 0u;
 	// 入力
 	Input* input_ = nullptr;
 };

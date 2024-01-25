@@ -4,24 +4,27 @@
 #include "Vector3.h" 
 #include <cassert>
 
-void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
+void Player::Initialize(const std::vector<Model*>& models) {
+	// 基底クラスの初期化
+	BaseCharacter::Initialize(models);
+
 	// NULLポインタチェック
-	assert(modelBody);
+	/*assert(modelBody);
 	assert(modelHead);
 	assert(modelL_arm);
-	assert(modelR_arm);
+	assert(modelR_arm);*/
 
 	// メンバ変数に受け取った値を代入
-	modelBody_ = modelBody;
+	/*modelBody_ = modelBody;
 	modelHead_ = modelHead;
 	modelL_arm_ = modelL_arm;
-	modelR_arm_ = modelR_arm;
+	modelR_arm_ = modelR_arm;*/
 
 	// ワールド変換の初期化
-	worldTransformBase_.Initialize();
+	//worldTransformBase_.Initialize();
 
 	worldTransformBody_.Initialize();
-	worldTransformBody_.parent_ = &worldTransformBase_;
+	worldTransformBody_.parent_ = &worldTransform_;
 
 	worldTransformHead_.Initialize();
 	worldTransformHead_.parent_ = &worldTransformBody_;
@@ -50,10 +53,9 @@ void Player::Update() {
 	UpdateFloatingGimmick();
 
 	const float speed = 0.3f;
-	//const float threshold = 0.5f;
-	//bool isMoving = false;
 
 	Vector3 move = {0.0f, 0.0f, 0.0f};
+
 	if (input_->PushKey(DIK_RIGHT)) {
 		move.x = 1.0f;
 	}
@@ -81,13 +83,13 @@ void Player::Update() {
 		move = TransformNormal(move, matRot);
 	}
 
-	worldTransformBase_.translation_ += move;
+	worldTransform_.translation_ += move;
 
 	// 移動ベクトルのY軸周り角度
-	worldTransformBase_.rotation_.y = std::atan2(move.x, move.z);
+	worldTransform_.rotation_.y = std::atan2(move.x, move.z);
 
 	// 変換行列を更新
-	worldTransformBase_.UpdateMatrix();
+	worldTransform_.UpdateMatrix();
 	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
@@ -118,10 +120,10 @@ void Player::Update() {
 
 void Player::Draw(const ViewProjection& viewProjection) {
 	// 3Dモデルを描画
-	modelBody_->Draw(worldTransformBody_, viewProjection);
-	modelHead_->Draw(worldTransformHead_, viewProjection);
-	modelL_arm_->Draw(worldTransformL_arm_, viewProjection);
-	modelR_arm_->Draw(worldTransformR_arm_, viewProjection);
+	models_[kModelIndexBody]->Draw(worldTransformBody_, viewProjection);
+	models_[kModelIndexHead]->Draw(worldTransformHead_, viewProjection);
+	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, viewProjection);
+	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, viewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
