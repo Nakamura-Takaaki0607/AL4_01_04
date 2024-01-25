@@ -113,6 +113,7 @@ void Player::Update() {
 	ImGui::SliderFloat("floatingAmplitude", &floatingAmplitude_, 0.0f, 10.0f);
 	ImGui::SliderFloat("idleArmAngleMax_", &idleArmAngleMax_, 0.0f, 180.0f);
 	ImGui::End();*/
+
 }
 
 void Player::Draw(const ViewProjection& viewProjection) {
